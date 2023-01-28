@@ -17,10 +17,10 @@ app.use(cors());
 
 app.post("/register", function (req, res) {
   try {
-    const { firstname, lastname, email, password } = req.body;
+    const { firstname, lastname, email, password, accountNumber } = req.body;
     connection.query(
-      "INSERT INTO personaldetails (accountNumber,firstname,lastname,email,password) VALUES (?,?, ?, ?, ?)",
-      [accountNumber,firstname, lastname, email, password],
+      "INSERT INTO personaldetails (firstname,lastname,email,password,accountNumber) VALUES (?,?, ?, ?, ?)",
+      [firstname, lastname, email, password, accountNumber],
       function (err) {
         if (err) console.log(err);
         res.status(200).send({ message: "Data inserted successfully" });
@@ -29,6 +29,45 @@ app.post("/register", function (req, res) {
   } catch (err) {
     console.log(err);
   }
+});
+
+// fetch all customers
+app.get("/displayCustomers", (req, res) => {
+  connection.query("SELECT * FROM personaldetails", (err, rows) => {
+    if (err) {
+      console.log(err);
+    } else {
+      res.status(200).send(rows);
+    }
+  });
+});
+
+//insert transaction to database
+app.post("/transaction", (req, res) => {
+  try {
+    const { accountNumber, transactionType, amount } = req.body;
+    connection.query(
+      "INSERT INTO transactions(accountNumber, transactionType,amount) VALUES (?, ?,?)",
+      [accountNumber, transactionType, amount],
+      (err, result) => {
+        if (err) console.log(err);
+        res.status(200).send(result);
+      }
+    );
+  } catch (err) {
+    console.log(err);
+  }
+});
+
+// fetch all transactions
+app.get("/displayTransactions", (req, res) => {
+  connection.query("SELECT * FROM transactions", (err, rows) => {
+    if (err) {
+      console.log(err);
+    } else {
+      res.status(200).send(rows);
+    }
+  });
 });
 
 app.listen(3000, function () {

@@ -97,11 +97,11 @@ var email = document.getElementById("emailInput").value;
 var password = document.getElementById("confirmPassword").value;
 var accountNumber = document.getElementById("accountNumber").value;
 var data = {
-  accountNumber: accountNumber,
   firstname: firstname,
   lastname: lastname,
   email: email,
   password: password,
+  accountNumber: accountNumber,
 };
 document.getElementById("openAccount").addEventListener("click", function (e) {
   e.preventDefault();
@@ -128,3 +128,93 @@ function openAccount(data) {
     console.log(err);
   }
 }
+
+//fetch data from database and append Account numbers on the select
+function selectCustomer() {
+  const selectedCustomer = document.getElementById("holder");
+  fetch("http://localhost:3000/displayCustomers")
+    .then((response) => response.json())
+    .then((data) => {
+      data.forEach((accountNumber) => {
+        const option = document.createElement("option");
+        option.value = accountNumber.accountNumber;
+        option.innerHTML = accountNumber.accountNumber;
+        selectedCustomer.appendChild(option);
+      });
+    });
+}
+selectCustomer();
+
+function showCustomers() {
+  const customerTable = document.getElementById("customerTable");
+  fetch("http://localhost:3000/displayCustomers")
+    .then((response) => response.json())
+    .then((data) => {
+      let html = "";
+      data.forEach((customer) => {
+        return (html += `<tr>
+			<td>${customer.accountNumber}</td>
+			<td>${customer.firstname} ${customer.lastname}</td>      
+			<td></td>
+			</tr>	`);
+        // insert the generated html into the appropriate element
+      });
+      customerTable.innerHTML = html;
+    });
+}
+
+showCustomers();
+
+//transaction form
+document.getElementById("submitTransaction").addEventListener("click", () => {
+  submitTransaction();
+});
+
+//insert transaction
+function submitTransaction() {
+  const transactionType = document.getElementById("transactionType").value;
+  const accountNumber = document.getElementById("holder").value;
+  const amount = document.getElementById("amount").value;
+  const transactionData = { transactionType, accountNumber, amount };
+  console.log(transactionData);
+  try {
+    fetch("http://localhost:3000/transaction", {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify(transactionData),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+        document.getElementById(
+          "trasactionMessage"
+        ).innerHTML = `Your ${transactionType} transaction of kshs${amount} been completed successfully`;
+      });
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+//fetch transactions
+function showtransactions() {
+  const transactionTable = document.getElementById("transactionTable");
+  fetch("http://localhost:3000/displayTransactions")
+    .then((response) => response.json())
+    .then((data) => {
+      let html = "";
+      data.forEach((transaction) => {
+        return (html += `<tr>
+			<td>${transaction.transactionType}</td>
+      <td></td>  
+			<td></td>      
+      <td>${transaction.amount}</td> 
+			</tr>	`);
+        // insert the generated html into the appropriate element
+      });
+      transactionTable.innerHTML = html;
+    });
+}
+
+showtransactions();
