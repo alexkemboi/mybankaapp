@@ -59,53 +59,15 @@ class account {
     }
   }
 }
-//atm class
-class ATM {
-  constructor(bank) {
-    this.bank = bank;
-  }
-  checkBalance(accountNumber) {
-    const account = this.bank.getAccount(accountNumber);
-    console.log(account.balance);
-  }
-  deposit(accountNumber, amount) {
-    const account = this.bank.getAccount(accountNumber);
-    account.deposit(amount);
-    console.log(
-      `Deposited:${amount}` + " " + `Account balance${account.balance}`
-    );
-  }
-  withdraw(accountNumber, amount) {
-    const account = this.bank.getAccount(accountNumber);
-    account.withdraw(amount);
-    console.log(
-      `Withdrawn:${amount}` + " " + `Account balance${account.balance}`
-    );
-  }
-}
 
 const myBank = new Bank("alex");
-myBank.addAccount(new account(123456789, "alex", 1000));
-const atm = new ATM(myBank);
-atm.checkBalance(123456789);
-atm.deposit(123456789, 100);
-atm.withdraw(123456789, 1);
 
 var firstname = document.getElementById("firstnameInput").value;
 var lastname = document.getElementById("lastnameInput").value;
 var email = document.getElementById("emailInput").value;
 var dob = document.getElementById("dobInput").value;
-const balance = 0;
-const accountNumber = document.getElementById("accountNumber").value;
-var data = {
-  firstname: firstname,
-  lastname: lastname,
-  email: email,
-  dob: dob,
-  balance: balance,
-  accountNumber: accountNumber,
-};
-console.log(data);
+var accountNumber = document.getElementById("accountNumber").value;
+
 document.getElementById("openAccount").addEventListener("click", function (e) {
   e.preventDefault();
   console.log(data);
@@ -132,10 +94,21 @@ function openAccount(data) {
   }
 }
 
+//get balance
+function getBalance() {
+  fetch("http://localhost:3000/showCustomersList")
+    .then((response) => response.json())
+    .then((data) => {
+      let balance = data.balance;
+      console.log(balance);
+    });
+  return balance;
+}
+
 //fetch data from database and append Account numbers on the select
 function selectCustomer() {
   const selectedCustomer = document.getElementById("holder");
-  fetch("http://localhost:3000/displayCustomers")
+  fetch("http://localhost:3000/showCustomersList")
     .then((response) => response.json())
     .then((data) => {
       data.forEach((accountNumber) => {
@@ -170,14 +143,14 @@ showCustomersList();
 
 function showCustomers() {
   const customerTable = document.getElementById("customerTable");
-  fetch("http://localhost:3000/displayCustomers")
+  fetch("http://localhost:3000/showCustomersList")
     .then((response) => response.json())
     .then((data) => {
       let html = "";
       data.forEach((customer) => {
         return (html += `<tr>
-      <td>${customer.accountId}</td>
-			<td>${customer.accountNumber}</td> 
+      <td>${customer.accountNumber}</td>
+			<td>${customer.firstname} ${customer.lastname}</td> 
       <td>${customer.balance}</td>
 			</tr>	`);
         // insert the generated html into the appropriate element
@@ -195,9 +168,18 @@ document.getElementById("submitTransaction").addEventListener("click", () => {
 
 //insert transaction
 function submitTransaction() {
-  const transactionType = document.getElementById("transactionType").value;
-  const accountNumber = document.getElementById("holder").value;
-  const amount = document.getElementById("amount").value;
+  let transactionType = document.getElementById("transactionType").value;
+  let amount = document.getElementById("amount").value;
+  let balance = getBalance.balance;
+  if (transactionType == "Withdraw") {
+    if (balance < amount) {
+      alert("Insufficient balance");
+    }
+    balance = balance - amount;
+  } else {
+    balance = balance + amount;
+  }
+  let accountNumber = document.getElementById("holder").value;
   let current_time = new Date();
   let current_year = current_time.getFullYear();
   let current_month = current_time.getMonth();
@@ -205,8 +187,7 @@ function submitTransaction() {
   let current_hours = current_time.getHours();
   let current_minutes = current_time.getMinutes();
   let current_seconds = current_time.getSeconds();
-  const transactionDate =
-    current_year + "-" + current_month + "-" + current_day;
+  let transactionDate = current_year + "-" + current_month + "-" + current_day;
   const time = current_hours + ":" + current_minutes + ":" + current_seconds;
   const transactionData = {
     transactionType,
@@ -214,6 +195,7 @@ function submitTransaction() {
     amount,
     transactionDate,
     time,
+    balance,
   };
   console.log(transactionDate);
 
@@ -268,24 +250,19 @@ document.getElementById("newAccount").addEventListener("click", (event) => {
   createNewAccount();
 });
 function createNewAccount() {
-  fetch("http://localhost:3000/showCustomersList")
-    .then((response) => response.json())
-    .then((data) => {
-      console.log(data);
-      const lastCustomer = data[data.length - 1];
-      const lastAccountNumber = lastCustomer.accountNumber;
-      const newAccountNumber = lastAccountNumber + 1;
-      document.getElementById("accountNumber").value = newAccountNumber;
-      document.getElementById("firstnameInput").value = "";
-      document.getElementById("lastnameInput").value = "";
-      document.getElementById("emailInput").value = "";
-      document.getElementById("dobInput").value = "";
-    });
+  let lastAccountNumber = lastCustomer.accountNumber;
+  let newAccountNumber = lastAccountNumber + 1;
+  document.getElementById("accountNumber").value = newAccountNumber;
+  document.getElementById("firstnameInput").value = "";
+  document.getElementById("lastnameInput").value = "";
+  document.getElementById("emailInput").value = "";
+  document.getElementById("dobInput").value = "";
 }
+
 //delete account
 document.getElementById("deleteAccount").addEventListener("click", (event) => {
   event.preventDefault();
-  const accountNumber = document.getElementById("searchInput").value;
+  let accountNumber = document.getElementById("searchInput").value;
   console.log(accountNumber);
   try {
     fetch(
@@ -320,9 +297,7 @@ document
   .getElementById("deleteTransactionButton")
   .addEventListener("click", (event) => {
     event.preventDefault();
-    const transactionId = document.getElementById(
-      "searchTransactionInput"
-    ).value;
+    let transactionId = document.getElementById("searchTransactionInput").value;
     console.log(transactionId);
     try {
       fetch(
@@ -351,7 +326,3 @@ document
       console.log(err);
     }
   });
-
-
-
-  

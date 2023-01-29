@@ -16,44 +16,24 @@ app.use(bodyParser.json());
 app.use(cors());
 
 //register customers
-
 app.post("/register", function (req, res) {
   try {
-    const { firstname, lastname, email, dob, balance, accountNumber } =
-      req.body;
+    const { firstname, lastname, email, dob, balance } = req.body;
     connection.query(
-      "INSERT INTO personaldetails (firstname,lastname,email,dob) VALUES   (?,?, ?, ?)",
-      [firstname, lastname, email, dob],
+      "INSERT INTO personaldetails (firstname,lastname,email,dob,balance) VALUES   (?,?, ?, ?,?)",
+      [firstname, lastname, email, dob, balance],
       function (err) {
         if (err) console.log(err);
         else {
-          connection.query(
-            "INSERT INTO accounts (accountNumber,balance) VALUES(?,?)",
-            [accountNumber, balance],
-            (err, result) => {
-              if (err) console.log(err);
-              res
-                .status(200)
-                .send({ message: `${accountNumber}Successfully activated` });
-            }
-          );
+          res
+            .status(200)
+            .send({ message: `Customer ${firstname} Successfully Created` });
         }
       }
     );
   } catch (err) {
     console.log(err);
   }
-});
-
-// fetch all customers accounts details
-app.get("/displayCustomers", (req, res) => {
-  connection.query("SELECT * FROM accounts", (err, rows) => {
-    if (err) {
-      console.log(err);
-    } else {
-      res.status(200).send(rows);
-    }
-  });
 });
 
 // fetch customers list
@@ -70,11 +50,17 @@ app.get("/showCustomersList", (req, res) => {
 //insert transaction to database
 app.post("/transaction", (req, res) => {
   try {
-    const { accountNumber, transactionType, amount, transactionDate, time } =
-      req.body;
+    const {
+      accountNumber,
+      transactionType,
+      amount,
+      transactionDate,
+      time,
+      balance,
+    } = req.body;
     connection.query(
-      "INSERT INTO transactions(accountNumber, transactionType,amount,transactionDate,time) VALUES (?,?,?, ?,?)",
-      [accountNumber, transactionType, amount, transactionDate, time],
+      "INSERT INTO transactions(accountNumber, transactionType,amount,transactionDate,time,balance) VALUES (?,?,?,?, ?,?)",
+      [accountNumber, transactionType, amount, transactionDate, time, balance],
       (err, result) => {
         if (err) console.log(err);
         res.status(200).send(result);
