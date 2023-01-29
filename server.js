@@ -19,13 +19,25 @@ app.use(cors());
 
 app.post("/register", function (req, res) {
   try {
-    const { firstname, lastname, email, password } = req.body;
+    const { firstname, lastname, email, dob, balance, accountNumber } =
+      req.body;
     connection.query(
-      "INSERT INTO personaldetails (firstname,lastname,email,password) VALUES   (?,?, ?, ?)",
-      [firstname, lastname, email, password],
+      "INSERT INTO personaldetails (firstname,lastname,email,dob) VALUES   (?,?, ?, ?)",
+      [firstname, lastname, email, dob],
       function (err) {
         if (err) console.log(err);
-        res.status(200).send({ message: "Data inserted successfully" });
+        else {
+          connection.query(
+            "INSERT INTO accounts (accountNumber,balance) VALUES(?,?)",
+            [accountNumber, balance],
+            (err, result) => {
+              if (err) console.log(err);
+              res
+                .status(200)
+                .send({ message: `${accountNumber}Successfully activated` });
+            }
+          );
+        }
       }
     );
   } catch (err) {
@@ -33,8 +45,19 @@ app.post("/register", function (req, res) {
   }
 });
 
-// fetch all customers
+// fetch all customers accounts details
 app.get("/displayCustomers", (req, res) => {
+  connection.query("SELECT * FROM accounts", (err, rows) => {
+    if (err) {
+      console.log(err);
+    } else {
+      res.status(200).send(rows);
+    }
+  });
+});
+
+// fetch customers list
+app.get("/showCustomersList", (req, res) => {
   connection.query("SELECT * FROM personaldetails", (err, rows) => {
     if (err) {
       console.log(err);

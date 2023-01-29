@@ -94,14 +94,18 @@ atm.withdraw(123456789, 1);
 var firstname = document.getElementById("firstnameInput").value;
 var lastname = document.getElementById("lastnameInput").value;
 var email = document.getElementById("emailInput").value;
-var password = document.getElementById("confirmPassword").value;
-var accountNumber = document.getElementById("accountNumber").value;
+var dob = document.getElementById("dobInput").value;
+const balance = 0;
+const accountNumber = document.getElementById("accountNumber").value;
 var data = {
   firstname: firstname,
   lastname: lastname,
   email: email,
-  password: password,
+  dob: dob,
+  balance: balance,
+  accountNumber: accountNumber,
 };
+console.log(data);
 document.getElementById("openAccount").addEventListener("click", function (e) {
   e.preventDefault();
   console.log(data);
@@ -122,7 +126,7 @@ function openAccount(data) {
         console.log(data);
         document.getElementById("success").innerHTML =
           "Your account has been registered";
-      }); //
+      });
   } catch (err) {
     console.log(err);
   }
@@ -144,6 +148,26 @@ function selectCustomer() {
 }
 selectCustomer();
 
+//Customer list
+//fetch data from database and append Account numbers on the select
+function showCustomersList() {
+  var html = "";
+  fetch("http://localhost:3000/showCustomersList")
+    .then((response) => response.json())
+    .then((data) => {
+      data.forEach((customers) => {
+        return (html += `<tr>
+        <td>${customers.accountNumber}</td>
+        <td>${customers.firstname} ${customers.lastname}</td>
+        <td>${customers.email}</td>
+        <td>${customers.dob}</td>
+        </tr>`);
+      });
+      document.getElementById("customerListTable").innerHTML = html;
+    });
+}
+showCustomersList();
+
 function showCustomers() {
   const customerTable = document.getElementById("customerTable");
   fetch("http://localhost:3000/displayCustomers")
@@ -152,9 +176,9 @@ function showCustomers() {
       let html = "";
       data.forEach((customer) => {
         return (html += `<tr>
-			<td>${customer.accountNumber}</td>
-			<td>${customer.firstname} ${customer.lastname}</td>      
-			<td></td>
+      <td>${customer.accountId}</td>
+			<td>${customer.accountNumber}</td> 
+      <td>${customer.balance}</td>
 			</tr>	`);
         // insert the generated html into the appropriate element
       });
@@ -240,7 +264,11 @@ showtransactions();
 //create new account
 document.getElementById("newAccount").addEventListener("click", (event) => {
   event.preventDefault();
-  fetch("http://localhost:3000/displayCustomers")
+  //create a new account
+  createNewAccount();
+});
+function createNewAccount() {
+  fetch("http://localhost:3000/showCustomersList")
     .then((response) => response.json())
     .then((data) => {
       console.log(data);
@@ -248,9 +276,12 @@ document.getElementById("newAccount").addEventListener("click", (event) => {
       const lastAccountNumber = lastCustomer.accountNumber;
       const newAccountNumber = lastAccountNumber + 1;
       document.getElementById("accountNumber").value = newAccountNumber;
+      document.getElementById("firstnameInput").value = "";
+      document.getElementById("lastnameInput").value = "";
+      document.getElementById("emailInput").value = "";
+      document.getElementById("dobInput").value = "";
     });
-});
-
+}
 //delete account
 document.getElementById("deleteAccount").addEventListener("click", (event) => {
   event.preventDefault();
@@ -293,7 +324,6 @@ document
       "searchTransactionInput"
     ).value;
     console.log(transactionId);
-    console.log(list);
     try {
       fetch(
         `http://localhost:3000/deleteTransaction?accountNumber=${transactionId}`,
@@ -321,3 +351,7 @@ document
       console.log(err);
     }
   });
+
+
+
+  

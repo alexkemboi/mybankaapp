@@ -48,7 +48,7 @@
         <div class="collapse navbar-collapse" id="navbarNav">
           <ul class="navbar-nav">
             <li class="nav-item active">
-              <a class="nav-link" href="#" id="homeNavLink">About</a>
+              <a class="nav-link" href="#" id="homeNavLink">Customers</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="#" id="openAccountNavLink"
@@ -73,11 +73,62 @@
       </nav>
 
       <!--Website body content-->
-      <div class="h-90vh bg-light">
-        <!-- Transaction form and customer list -->
+      <div class="bg-light">
+          <!--Customer list-->
+      <div class="col-12">
+        <div class="card mb-3" id="customerListCard">
+          <div class="card-body">
+            <h4 class="card-title">Customer List</h4>
+            <p id="messageDelete" class="text-success text-center"></p>
+            <label for="table"></label>
+            <table id="table" class="table table-bordered">
+              <thead>
+                <tr>
+                  <div class="row m-1">
+                    <div class="col-6">
+                      <input
+                        type="search"
+                        id="searchCustomerInput"
+                        class="form-control"
+                      />
+                    </div>
+                    <div class="col-3">
+                      <button class="btn btn-dark form-control">
+                        Search
+                      </button>
+                    </div>
+                    <div class="col-3">
+                      <button
+                        class="btn btn-danger form-control"
+                        id="deleteCustomer"
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </div>
+                </tr>
+                <tr>
+                  <th>account Number</th>
+                  <th>Name</th>                  
+                  <th>Email</th>
+                  <th>Dob</th>
+                </tr>
+              </thead>
+              <tbody id="customerListTable"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+
+
+        
+        <!-- Transaction form and customer balance list -->
         <div class="row">
           <div class="col-12">
-            <div class="card mb-3 d-none" id="transactCard">
+            <div class="card mb-3" id="transactCard">
               <div class="card-body">
                 <h4 class="card-title">Transaction</h4>
                 <label class="card-a" for="holder">Holder</label>
@@ -116,7 +167,7 @@
           </div>
 
           <div class="col-12">
-            <div class="card mb-3 d-none" id="balanceCard">
+            <div class="card mb-3" id="balanceCard">
               <div class="card-body">
                 <h4 class="card-title">Customer Balances</h4>
                 <p id="messageDelete" class="text-success text-center"></p>
@@ -149,7 +200,7 @@
                     </tr>
                     <tr>
                       <th>Acc No</th>
-                      <th>Holder</th>
+                      <th>account Number</th>
                       <th>Balance</th>
                     </tr>
                   </thead>
@@ -163,7 +214,7 @@
         <!--Transaction list per customer-->
         <div class="row">
           <div class="col-12">
-            <div class="card mb-2 d-none" id="transactionCard">
+            <div class="card mb-2" id="transactionCard">
               <div class="card-body">
                 <h4 class="card-title">Transaction List</h4>
                 <div class="row m-1">
@@ -187,7 +238,7 @@
                     </button>
                   </div>
                   <div class="col-2">
-                    <button class="btn btn-success form-control">update</button>
+                    <button class="btn btn-success form-control">Update</button>
                   </div>
                 </div>
 
@@ -212,7 +263,7 @@
         <!--Open account code-->
         <div class="row">
           <div class="col-12">
-            <div class="card mb-3 d-none" id="openAccountCard">
+            <div class="card mb-3" id="openAccountCard">
               <form id="openAccountForm">
                 <div class="card-body">
                   <h4 class="card-title">Open Account</h4>
@@ -221,76 +272,73 @@
                       <p class="text-center text-success" id="success"></p>
                     </div>
                   </div>
-                  <div class="row">
-                    <div class="col-3">
-                      <label for="accountNumber">Account Number</label>
+                    <div class="row">
+                      <div class="col-3">
+                        <label for="accountNumber">Account Number</label>
+                      </div>
+                      <div class="col-6">
+                        <input
+                          class="form-control"
+                          id="accountNumber"
+                          disabled
+                        />
+                      </div>
+                      <div class="col-3">
+                        <button
+                          type="reset"
+                          class="btn btn-dark"
+                          id="newAccount"
+                        >
+                          New
+                        </button>
+                      </div>
                     </div>
-                    <div class="col-6">
-                      <input class="form-control" id="accountNumber" disabled />
-                    </div>
-                    <div class="col-3">
-                      <button type="reset" class="btn btn-dark" id="newAccount">
-                        New
-                      </button>
-                    </div>
-                  </div>
+                  <form>
 
-                  <label for="firstnameInput">First Name</label>
-                  <input
-                    type="text"
-                    id="firstnameInput"
-                    class="form-control"
-                    placeholder="Firstname"
-                    required
-                  />
+                    <label for="firstnameInput">First Name</label>
+                    <input
+                      type="text"
+                      id="firstnameInput"
+                      class="form-control"
+                      placeholder="Firstname"
+                      required
+                    />
 
-                  <label for="lastnameInput">Last Name</label>
-                  <input
-                    type="text"
-                    id="lastnameInput"
-                    class="form-control"
-                    placeholder="Lastname"
-                    required
-                  />
+                    <label for="lastnameInput">Last Name</label>
+                    <input
+                      type="text"
+                      id="lastnameInput"
+                      class="form-control"
+                      placeholder="Lastname"
+                      required
+                    />
 
-                  <label for="emailInput">Email</label>
-                  <input
-                    type="email"
-                    id="emailInput"
-                    class="form-control"
-                    placeholder="alex@example."
-                    required
-                  />
-                  <div class="row">
-                    <div class="col-6">
-                      <label for="passwordInput">Password</label>
-                      <input
-                        type="password"
-                        id="passwordInput"
-                        class="form-control"
-                        placeholder="1234"
-                        required
-                      />
+                    <label for="emailInput">Email</label>
+                    <input
+                      type="email"
+                      id="emailInput"
+                      class="form-control"
+                      placeholder="alex@example."
+                      required
+                    />
+                    <div class="row">
+                      <div class="col-6">
+                        <label for="passwordInput">Dob</label>
+                        <input
+                          type="date"
+                          id="passwordInput"
+                          class="form-control"
+                          required
+                        />
+                      </div>
                     </div>
-
-                    <div class="col-6">
-                      <label for="confirmPassword">Confirm Password</label>
-                      <input
-                        type="text"
-                        id="confirmPassword"
-                        class="form-control"
-                        placeholder="1234"
-                        required
-                      />
-                    </div>
-                  </div>
-                  <button
-                    class="btn btn-success btn-block m-2"
-                    id="openAccount"
-                    type="submit"
-                  >
-                    OpenAccount
-                  </button>
+                    <button
+                      class="btn btn-success btn-block m-2"
+                      id="openAccount"
+                    >
+                      OpenAccount
+                    </button>
+                  </form>
                 </div>
               </form>
             </div>
