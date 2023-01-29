@@ -75,37 +75,49 @@
       <!--Website body content-->
       <div class="bg-light">
           <!--Customer list-->
-      <div class="col-12">
+      <div class="col-12 ">
         <div class="card mb-3" id="customerListCard">
           <div class="card-body">
             <h4 class="card-title">Customer List</h4>
             <p id="messageDelete" class="text-success text-center"></p>
             <label for="table"></label>
+            <div class="row m-1">
+              <div class="col-12">
+                <input
+                  type="search"
+                  id="searchCustomerInput"
+                  class="form-control"
+                />
+              </div>   
+           </div>
+            <div class="row m-1">
+              <div class="col-4">
+                <button class="btn btn-dark  form-control">
+                  Search
+                </button>
+              </div>
+              <div class="col-4">
+                <button
+                  class="btn btn-danger  form-control"
+                  id="deleteCustomer"
+                >
+                  Delete
+                </button>
+              </div>
+              <div class="col-4">
+                <button
+                  class="btn btn-success  form-control"
+                  id="deleteCustomer"
+                >
+                  Update
+                </button>
+              </div>
+
+            </div>
             <table id="table" class="table table-bordered">
               <thead>
                 <tr>
-                  <div class="row m-1">
-                    <div class="col-6">
-                      <input
-                        type="search"
-                        id="searchCustomerInput"
-                        class="form-control"
-                      />
-                    </div>
-                    <div class="col-3">
-                      <button class="btn btn-dark form-control">
-                        Search
-                      </button>
-                    </div>
-                    <div class="col-3">
-                      <button
-                        class="btn btn-danger form-control"
-                        id="deleteCustomer"
-                      >
-                        Delete
-                      </button>
-                    </div>
-                  </div>
+                  
                 </tr>
                 <tr>
                   <th>account Number</th>
@@ -218,18 +230,20 @@
               <div class="card-body">
                 <h4 class="card-title">Transaction List</h4>
                 <div class="row m-1">
-                  <div class="col-6">
+                  <div class="col-12">
                     <input
                       type="search"
                       id="searchTransactionInput"
                       class="form-control"
                     />
                   </div>
-                  <div class="col-2">
+                </div>
+                <div class="row m-1">
+                  <div class="col-4">
                     <button class="btn btn-dark form-control">Search</button>
                   </div>
 
-                  <div class="col-2">
+                  <div class="col-4">
                     <button
                       class="btn btn-danger form-control"
                       id="deleteTransactionButton"
@@ -237,24 +251,27 @@
                       Delete
                     </button>
                   </div>
-                  <div class="col-2">
+                  <div class="col-4">
                     <button class="btn btn-success form-control">Update</button>
                   </div>
                 </div>
-
-                <table id="table" class="table table-bordered">
-                  <thead>
-                    <tr>
-                      <th>Transaction ID</th>
-                      <th>Account Number</th>
-                      <th>Transaction Type</th>
-                      <th>Date</th>
-                      <th>Time</th>
-                      <th>Amount</th>
-                    </tr>
-                  </thead>
-                  <tbody id="transactionTable"></tbody>
-                </table>
+                <div class="row">
+                  <div class="col-12">
+                    <table id="table" class="table table-bordered">
+                      <thead>
+                        <tr>
+                          <th>TraID</th>
+                          <th>AccN0</th>
+                          <th>TraType</th>
+                          <th>Date</th>
+                          <th>Time</th>
+                          <th>Amount</th>
+                        </tr>
+                      </thead>
+                      <tbody id="transactionTable"></tbody>
+                    </table>
+                    </div>
+                    </div>              
               </div>
             </div>
           </div>
@@ -349,16 +366,16 @@
       <!--footer component-->
       <footer class="container">
         <div class="row">
-          <div class="col-md-6">
-            <p>Copyright © 2023 ikonex</p>
+          <div class="col-md-4">
+            <p class="text-center">Copyright © 2023 ikonex</p>
           </div>
-          <div class="col-md-6">
-            <ul class="list-inline text-right">
+          <div class="col-md-4">
+            <ul class="list-inline text-center">
               <li class="list-inline-item">
-                <a href="#">Privacy Policy</a>
+                <a class="text-center" href="#">Privacy Policy</a>
               </li>
               <li class="list-inline-item">
-                <a href="#">Terms of Use</a>
+                <a class="text-center" href="#">Terms of Use</a>
               </li>
             </ul>
           </div>
