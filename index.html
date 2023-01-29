@@ -67,6 +67,7 @@
             <li class="nav-item">
               <a class="nav-link" href="#" id="balanceNavLink">Balance</a>
             </li>
+            <li class="nav-item"></li>
           </ul>
         </div>
       </nav>
@@ -118,9 +119,34 @@
             <div class="card mb-3 d-none" id="balanceCard">
               <div class="card-body">
                 <h4 class="card-title">Customer Balances</h4>
+                <p id="messageDelete" class="text-success text-center"></p>
                 <label for="table"></label>
                 <table id="table" class="table table-bordered">
                   <thead>
+                    <tr>
+                      <div class="row m-1">
+                        <div class="col-6">
+                          <input
+                            type="search"
+                            id="searchInput"
+                            class="form-control"
+                          />
+                        </div>
+                        <div class="col-3">
+                          <button class="btn btn-dark form-control">
+                            Search
+                          </button>
+                        </div>
+                        <div class="col-3">
+                          <button
+                            class="btn btn-danger form-control"
+                            id="deleteAccount"
+                          >
+                            Delete
+                          </button>
+                        </div>
+                      </div>
+                    </tr>
                     <tr>
                       <th>Acc No</th>
                       <th>Holder</th>
@@ -139,25 +165,37 @@
           <div class="col-12">
             <div class="card mb-2 d-none" id="transactionCard">
               <div class="card-body">
-                <div class="row">
-                  <div class="col-6">
-                    <h4 class="card-title">Transaction List</h4>
-                  </div>
+                <h4 class="card-title">Transaction List</h4>
+                <div class="row m-1">
                   <div class="col-6">
                     <input
                       type="search"
-                      id="transactionSearch"
+                      id="searchTransactionInput"
                       class="form-control"
                     />
                   </div>
                   <div class="col-2">
-                    <button class="btn btn-danger form-control">Delete</button>
+                    <button class="btn btn-dark form-control">Search</button>
+                  </div>
+
+                  <div class="col-2">
+                    <button
+                      class="btn btn-danger form-control"
+                      id="deleteTransactionButton"
+                    >
+                      Delete
+                    </button>
+                  </div>
+                  <div class="col-2">
+                    <button class="btn btn-success form-control">update</button>
                   </div>
                 </div>
 
                 <table id="table" class="table table-bordered">
                   <thead>
                     <tr>
+                      <th>Transaction ID</th>
+                      <th>Account Number</th>
                       <th>Transaction Type</th>
                       <th>Date</th>
                       <th>Time</th>
@@ -171,6 +209,7 @@
           </div>
         </div>
 
+        <!--Open account code-->
         <div class="row">
           <div class="col-12">
             <div class="card mb-3 d-none" id="openAccountCard">
@@ -184,16 +223,15 @@
                   </div>
                   <div class="row">
                     <div class="col-3">
-                      <button type="reset" class="btn btn-danger" id="rest">
+                      <label for="accountNumber">Account Number</label>
+                    </div>
+                    <div class="col-6">
+                      <input class="form-control" id="accountNumber" disabled />
+                    </div>
+                    <div class="col-3">
+                      <button type="reset" class="btn btn-dark" id="newAccount">
                         New
                       </button>
-                    </div>
-                  </div>
-
-                  <div class="row">
-                    <div class="col-12">
-                      <label for="accountNumber">Account Number</label>
-                      <input class="btn btn-secondary" id="accountNumber" />
                     </div>
                   </div>
 
@@ -249,6 +287,7 @@
                   <button
                     class="btn btn-success btn-block m-2"
                     id="openAccount"
+                    type="submit"
                   >
                     OpenAccount
                   </button>

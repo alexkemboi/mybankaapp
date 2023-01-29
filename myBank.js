@@ -101,7 +101,6 @@ var data = {
   lastname: lastname,
   email: email,
   password: password,
-  accountNumber: accountNumber,
 };
 document.getElementById("openAccount").addEventListener("click", function (e) {
   e.preventDefault();
@@ -175,8 +174,25 @@ function submitTransaction() {
   const transactionType = document.getElementById("transactionType").value;
   const accountNumber = document.getElementById("holder").value;
   const amount = document.getElementById("amount").value;
-  const transactionData = { transactionType, accountNumber, amount };
-  console.log(transactionData);
+  let current_time = new Date();
+  let current_year = current_time.getFullYear();
+  let current_month = current_time.getMonth();
+  let current_day = current_time.getDate();
+  let current_hours = current_time.getHours();
+  let current_minutes = current_time.getMinutes();
+  let current_seconds = current_time.getSeconds();
+  const transactionDate =
+    current_year + "-" + current_month + "-" + current_day;
+  const time = current_hours + ":" + current_minutes + ":" + current_seconds;
+  const transactionData = {
+    transactionType,
+    accountNumber,
+    amount,
+    transactionDate,
+    time,
+  };
+  console.log(transactionDate);
+
   try {
     fetch("http://localhost:3000/transaction", {
       method: "POST",
@@ -190,7 +206,7 @@ function submitTransaction() {
         console.log(data);
         document.getElementById(
           "trasactionMessage"
-        ).innerHTML = `Your ${transactionType} transaction of kshs${amount} been completed successfully`;
+        ).innerHTML = `${transactionType} transaction of kshs${amount} has been completed successfully`;
       });
   } catch (err) {
     console.log(err);
@@ -205,10 +221,12 @@ function showtransactions() {
     .then((data) => {
       let html = "";
       data.forEach((transaction) => {
-        return (html += `<tr>
+        return (html += `<tr>        
+			<td>${transaction.transactionId}</td>      
+			<td>${transaction.accountNumber}</td>
 			<td>${transaction.transactionType}</td>
-      <td></td>  
-			<td></td>      
+      <td>${transaction.transactionDate}</td>  
+			<td>${transaction.time}</td>      
       <td>${transaction.amount}</td> 
 			</tr>	`);
         // insert the generated html into the appropriate element
@@ -218,3 +236,88 @@ function showtransactions() {
 }
 
 showtransactions();
+
+//create new account
+document.getElementById("newAccount").addEventListener("click", (event) => {
+  event.preventDefault();
+  fetch("http://localhost:3000/displayCustomers")
+    .then((response) => response.json())
+    .then((data) => {
+      console.log(data);
+      const lastCustomer = data[data.length - 1];
+      const lastAccountNumber = lastCustomer.accountNumber;
+      const newAccountNumber = lastAccountNumber + 1;
+      document.getElementById("accountNumber").value = newAccountNumber;
+    });
+});
+
+//delete account
+document.getElementById("deleteAccount").addEventListener("click", (event) => {
+  event.preventDefault();
+  const accountNumber = document.getElementById("searchInput").value;
+  console.log(accountNumber);
+  try {
+    fetch(
+      `http://localhost:3000/deleteAccount?accountNumber=${accountNumber}`,
+      {
+        method: "DELETE",
+        headers: {
+          "content-type": "application/json",
+        },
+      }
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+        if (!data.error) {
+          document.getElementById(
+            "messageDelete"
+          ).innerHTML = `Account ${accountNumber} has been deleted successfully`;
+        } else {
+          const message = document.createElement("p");
+          message.innerHTML = data.error;
+          document.getElementById("messageDelete").appendChild(message);
+        }
+      });
+  } catch (err) {
+    console.log(err);
+  }
+});
+
+//delete transaction
+document
+  .getElementById("deleteTransactionButton")
+  .addEventListener("click", (event) => {
+    event.preventDefault();
+    const transactionId = document.getElementById(
+      "searchTransactionInput"
+    ).value;
+    console.log(transactionId);
+    console.log(list);
+    try {
+      fetch(
+        `http://localhost:3000/deleteTransaction?accountNumber=${transactionId}`,
+        {
+          method: "DELETE",
+          headers: {
+            "content-type": "application/json",
+          },
+        }
+      )
+        .then((response) => response.json())
+        .then((data) => {
+          console.log(data);
+          if (!data.error) {
+            document.getElementById(
+              "messageDelete"
+            ).innerHTML = `transaction ${transactionId} has been deleted successfully`;
+          } else {
+            const message = document.createElement("p");
+            message.innerHTML = data.error;
+            document.getElementById("messageDelete").appendChild(message);
+          }
+        });
+    } catch (err) {
+      console.log(err);
+    }
+  });

@@ -15,12 +15,14 @@ app.use(bodyParser.json());
 
 app.use(cors());
 
+//register customers
+
 app.post("/register", function (req, res) {
   try {
-    const { firstname, lastname, email, password, accountNumber } = req.body;
+    const { firstname, lastname, email, password } = req.body;
     connection.query(
-      "INSERT INTO personaldetails (firstname,lastname,email,password,accountNumber) VALUES (?,?, ?, ?, ?)",
-      [firstname, lastname, email, password, accountNumber],
+      "INSERT INTO personaldetails (firstname,lastname,email,password) VALUES   (?,?, ?, ?)",
+      [firstname, lastname, email, password],
       function (err) {
         if (err) console.log(err);
         res.status(200).send({ message: "Data inserted successfully" });
@@ -45,10 +47,11 @@ app.get("/displayCustomers", (req, res) => {
 //insert transaction to database
 app.post("/transaction", (req, res) => {
   try {
-    const { accountNumber, transactionType, amount } = req.body;
+    const { accountNumber, transactionType, amount, transactionDate, time } =
+      req.body;
     connection.query(
-      "INSERT INTO transactions(accountNumber, transactionType,amount) VALUES (?, ?,?)",
-      [accountNumber, transactionType, amount],
+      "INSERT INTO transactions(accountNumber, transactionType,amount,transactionDate,time) VALUES (?,?,?, ?,?)",
+      [accountNumber, transactionType, amount, transactionDate, time],
       (err, result) => {
         if (err) console.log(err);
         res.status(200).send(result);
@@ -59,7 +62,7 @@ app.post("/transaction", (req, res) => {
   }
 });
 
-// fetch all transactions
+// route to fetch all transactions
 app.get("/displayTransactions", (req, res) => {
   connection.query("SELECT * FROM transactions", (err, rows) => {
     if (err) {
@@ -70,6 +73,83 @@ app.get("/displayTransactions", (req, res) => {
   });
 });
 
+//route to delete
+app.delete("/deleteAccount", (req, res) => {
+  const accountNumber = req.query;
+  if (!accountNumber) {
+    return res.status(400).json({ error: "Account number is required." });
+  }
+
+  connection.query(
+    `SELECT * FROM personaldetails WHERE firstname = ?`,
+    [accountNumber],
+    (error, results) => {
+      if (error) {
+        return res
+          .status(500)
+          .json({ error: "An error occurred while querying the database." });
+      }
+
+      if (!results.length) {
+        return res.status(404).json({ error: "Account not found." });
+      }
+
+      connection.query(
+        `DELETE FROM personaldetails WHERE firstname = ?`,
+        [accountNumber],
+        (err) => {
+          if (err) {
+            return res
+              .status(500)
+              .json({ error: "An error occurred while deleting the account." });
+          }
+          res.json({ message: "Account deleted successfully." });
+        }
+      );
+    }
+  );
+});
+
+//route to delete transaction
+app.delete("/deleteTransaction", (req, res) => {
+  const transactionId = req.query;
+  if (!transactionId) {
+    return res
+      .status(400)
+      .json({ error: "Transaction ID number is required." });
+  }
+
+  connection.query(
+    `SELECT * FROM transactions WHERE transactionId = ?`,
+    [transactionId],
+    (error, results) => {
+      if (error) {
+        return res
+          .status(500)
+          .json({ error: "An error occurred while querying the database." });
+      }
+
+      if (!results.length) {
+        return res.status(404).json({ error: "Transaction not found." });
+      }
+
+      connection.query(
+        `DELETE FROM transactions WHERE transactionId = ?`,
+        [transactionId],
+        (err) => {
+          if (err) {
+            return res.status(500).json({
+              error: "An error occurred while deleting the transaction.",
+            });
+          }
+          res.json({ message: "Transaction deleted successfully." });
+        }
+      );
+    }
+  );
+});
+
+//App is listening on port
 app.listen(3000, function () {
   console.log("server is running");
 });
