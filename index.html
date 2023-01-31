@@ -26,6 +26,8 @@
       integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
       crossorigin="anonymous"
     ></script>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.1/css/all.css" crossorigin="anonymous"/>
+
 
     <title>Bank</title>
   </head>
@@ -33,7 +35,8 @@
     <div class="container">
       <!-- navigation bar-->
       <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="#">Home</a>
+        <i class="fas fa-home" style="color: green;"></i>
+        <a class="navbar-brand fas fa-house" href="#">Home</a>
         <button
           class="navbar-toggler"
           type="button"
@@ -76,7 +79,7 @@
       <div class="bg-light">
           <!--Customer list-->
       <div class="col-12 ">
-        <div class="card mb-3" id="customerListCard">
+        <div class="card mb-3 d-none" id="customerListCard">
           <div class="card-body">
             <h4 class="card-title">Customer List</h4>
             <p id="messageDelete" class="text-success text-center"></p>
@@ -140,18 +143,18 @@
         <!-- Transaction form and customer balance list -->
         <div class="row">
           <div class="col-12">
-            <div class="card mb-3" id="transactCard">
+            <div class="card mb-3 d-none" id="transactCard">
               <div class="card-body">
-                <h4 class="card-title">Transaction</h4>
+                <h4 class="card-title">Transaction</h4>                
+                <p class="text-success" id="trasactionMessage"></p>
                 <label class="card-a" for="holder">Holder</label>
                 <select
                   class="form-control"
-                  id="holder"
+                  id="holderAccountNumber"
                   name="holder"
                   required
                 ></select>
                 <label for="transactionType">Transaction</label>
-                <p class="text-success" id="trasactionMessage"></p>
                 <select
                   name="transactionType"
                   id="transactionType"
@@ -160,12 +163,12 @@
                   <option value="Deposit">Deposit</option>
                   <option value="Withdraw">Withdraw</option>
                 </select>
-                <label for="amount"></label>
+                <label for="transactAmount"></label>
                 <input
                   type="text"
                   class="form-control"
                   placeholder="Enter amount"
-                  id="amount"
+                  id="transactAmount"
                 />
                 <button
                   type="button"
@@ -178,8 +181,8 @@
             </div>
           </div>
 
-          <div class="col-12">
-            <div class="card mb-3" id="balanceCard">
+          <div class="col-12 ">
+            <div class="card mb-3 d-none" id="balanceCard">
               <div class="card-body">
                 <h4 class="card-title">Customer Balances</h4>
                 <p id="messageDelete" class="text-success text-center"></p>
@@ -187,21 +190,22 @@
                 <table id="table" class="table table-bordered">
                   <thead>
                     <tr>
-                      <div class="row m-1">
-                        <div class="col-12">
+                      <div class="row m-1 input-group-append">
+                        <div class="col-6">
                           <input
                             type="search"
                             id="searchInput"
                             class="form-control"
                           />
                         </div>
-                      </div>
-                      <div class="row m-1">
+                        
                         <div class="col-4">
-                          <button class="btn btn-dark form-control">
-                            Search
+                          <button class="btn btn-dark btn-outline-info form-control ">
+                            <i class="fas fa-search">Search</i>
                           </button>
                         </div>
+                      </div>
+                      <div class="row m-1">
                         <div class="col-4">
                           <button
                             class="btn btn-danger form-control"
@@ -234,9 +238,9 @@
         </div>
 
         <!--Transaction list per customer-->
-        <div class="row">
+        <div class="row ">
           <div class="col-12">
-            <div class="card mb-2" id="transactionCard">
+            <div class="card mb-2 d-none" id="transactionCard">
               <div class="card-body">
                 <h4 class="card-title">Transaction List</h4>
                 <div class="row m-1">
@@ -290,7 +294,7 @@
         <!--Open account code-->
         <div class="row">
           <div class="col-12">
-            <div class="card mb-3" id="openAccountCard">
+            <div class="card mb-3 d-none" id="openAccountCard">
               <form id="openAccountForm">
                 <div class="card-body">
                   <h4 class="card-title">Open Account</h4>

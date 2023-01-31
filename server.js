@@ -82,6 +82,25 @@ app.get("/displayTransactions", (req, res) => {
   });
 });
 
+app.get("/showCustomerBalance", (req, res) => {
+  const { selectedAccountNumber } = req.query;
+  if (!selectedAccountNumber) {
+    return res.status(400).json({ error: "Account number is required." });
+  } else {
+    connection.query(
+      `SELECT * FROM transactions WHERE accountNumber=?`,
+      [selectedAccountNumber],
+      (err, rows) => {
+        if (err) {
+          console.log(err);
+        } else {
+          res.status(200).send(rows);
+        }
+      }
+    );
+  }
+});
+
 //route to delete
 app.delete("/deleteAccount", (req, res) => {
   const accountNumber = req.query;

@@ -28,50 +28,23 @@ $(document).ready(function () {
   });
 });
 
-//bank class
-class Bank {
-  constructor(name) {
-    this.name = name;
-    this.accounts = [];
-  }
-  addAccount(account) {
-    this.accounts.push(account);
-  }
-  getAccount(accountNumber) {
-    return this.accounts.find((account) => account.number === accountNumber);
-  }
-}
-//account class
-class account {
-  constructor(number, holder, balance) {
-    this.number = number;
-    this.balance = balance;
-    this.holder = holder;
-  }
-  deposit(amount) {
-    this.balance += amount;
-  }
-  withdraw(amount) {
-    if (amount > this.balance) {
-      console.log("insufficient funds");
-    } else {
-      this.balance -= amount;
-    }
-  }
-}
-
-const myBank = new Bank("alex");
-
 var firstname = document.getElementById("firstnameInput").value;
 var lastname = document.getElementById("lastnameInput").value;
 var email = document.getElementById("emailInput").value;
 var dob = document.getElementById("dobInput").value;
 var accountNumber = document.getElementById("accountNumber").value;
-
+var customerAccountData = {
+  firstname: firstname,
+  lastname: lastname,
+  email: email,
+  dob: dob,
+  accountNumber: accountNumber,
+  balance: 0,
+};
 document.getElementById("openAccount").addEventListener("click", function (e) {
   e.preventDefault();
-  console.log(data);
-  openAccount(data);
+  console.log(customerAccountData);
+  openAccount(customerAccountData);
 });
 
 function openAccount(data) {
@@ -92,22 +65,13 @@ function openAccount(data) {
   } catch (err) {
     console.log(err);
   }
-}
-
-//get balance
-function getBalance() {
-  fetch("http://localhost:3000/showCustomersList")
-    .then((response) => response.json())
-    .then((data) => {
-      let balance = data.balance;
-      console.log(balance);
-    });
-  return balance;
+  showCustomers();
+  showCustomersList();
 }
 
 //fetch data from database and append Account numbers on the select
 function selectCustomer() {
-  const selectedCustomer = document.getElementById("holder");
+  const selectedCustomer = document.getElementById("holderAccountNumber");
   fetch("http://localhost:3000/showCustomersList")
     .then((response) => response.json())
     .then((data) => {
@@ -115,6 +79,7 @@ function selectCustomer() {
         const option = document.createElement("option");
         option.value = accountNumber.accountNumber;
         option.innerHTML = accountNumber.accountNumber;
+        option.id = accountNumber.id;
         selectedCustomer.appendChild(option);
       });
     });
@@ -146,6 +111,7 @@ function showCustomers() {
   fetch("http://localhost:3000/showCustomersList")
     .then((response) => response.json())
     .then((data) => {
+      console.log(data);
       let html = "";
       data.forEach((customer) => {
         return (html += `<tr>
@@ -168,18 +134,38 @@ document.getElementById("submitTransaction").addEventListener("click", () => {
 
 //insert transaction
 function submitTransaction() {
+  let accountNumber = document.getElementById("holderAccountNumber").value;
   let transactionType = document.getElementById("transactionType").value;
-  let amount = document.getElementById("amount").value;
-  let balance = getBalance.balance;
-  if (transactionType == "Withdraw") {
-    if (balance < amount) {
-      alert("Insufficient balance");
-    }
-    balance = balance - amount;
-  } else {
-    balance = balance + amount;
-  }
-  let accountNumber = document.getElementById("holder").value;
+  let amount = document.getElementById("transactAmount").value;
+
+  // Create a Promise to get balance
+  const getBalance = () => {
+    const select = document.getElementById("holderAccountNumber");
+    const selectedIndex = select.selectedIndex;
+    const selectedAccountNumber = select.options[selectedIndex].value;
+    console.log(selectedAccountNumber);
+    return new Promise((resolve, reject) => {
+      fetch(
+        `http://localhost:3000/showCustomerBalance?selectedAccountNumber=${selectedAccountNumber}`
+      )
+        .then((response) => response.json())
+        .then((data) => {
+          let balance = data.length === 0 ? 0 : data[data.length - 1].balance;
+          console.log(balance);
+          if (transactionType == "Withdraw") {
+            if (balance < amount) {
+              alert("Insufficient balance");
+              balance = parseInt(balance) - parseInt(amount);
+            }
+            balance = parseInt(balance) - parseInt(amount);
+          } else {
+            balance = parseInt(balance) + parseInt(amount);
+          }
+          resolve(balance);
+        });
+    });
+  };
+
   let current_time = new Date();
   let current_year = current_time.getFullYear();
   let current_month = current_time.getMonth();
@@ -189,34 +175,39 @@ function submitTransaction() {
   let current_seconds = current_time.getSeconds();
   let transactionDate = current_year + "-" + current_month + "-" + current_day;
   const time = current_hours + ":" + current_minutes + ":" + current_seconds;
-  const transactionData = {
-    transactionType,
-    accountNumber,
-    amount,
-    transactionDate,
-    time,
-    balance,
-  };
-  console.log(transactionDate);
 
-  try {
-    fetch("http://localhost:3000/transaction", {
-      method: "POST",
-      headers: {
-        "content-type": "application/json",
-      },
-      body: JSON.stringify(transactionData),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        console.log(data);
-        document.getElementById(
-          "trasactionMessage"
-        ).innerHTML = `${transactionType} transaction of kshs${amount} has been completed successfully`;
-      });
-  } catch (err) {
-    console.log(err);
-  }
+  // Use the resolved value of the Promise in the transactionData object
+  getBalance().then((balance) => {
+    const transactionData = {
+      transactionType,
+      accountNumber,
+      amount,
+      transactionDate,
+      time,
+      balance,
+    };
+    console.log(transactionData);
+
+    try {
+      fetch("http://localhost:3000/transaction", {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+        },
+        body: JSON.stringify(transactionData),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          console.log(data);
+          document.getElementById(
+            "trasactionMessage"
+          ).innerHTML = `${transactionType} transaction of kshs${amount} has been completed successfully`;
+        });
+    } catch (err) {
+      console.log(err);
+    }
+    showtransactions();
+  });
 }
 
 //fetch transactions
@@ -250,13 +241,21 @@ document.getElementById("newAccount").addEventListener("click", (event) => {
   createNewAccount();
 });
 function createNewAccount() {
-  let lastAccountNumber = lastCustomer.accountNumber;
-  let newAccountNumber = lastAccountNumber + 1;
-  document.getElementById("accountNumber").value = newAccountNumber;
-  document.getElementById("firstnameInput").value = "";
-  document.getElementById("lastnameInput").value = "";
-  document.getElementById("emailInput").value = "";
-  document.getElementById("dobInput").value = "";
+  fetch("http://localhost:3000/showCustomersList")
+    .then((response) => {
+      return response.json();
+    })
+    .then((data) => {
+      console.log(data);
+      let lastAccountNumber = data[data.length - 1].accountNumber;
+      let newAccountNumber = lastAccountNumber + 1;
+      console.log(lastAccountNumber);
+      document.getElementById("accountNumber").value = newAccountNumber;
+      document.getElementById("firstnameInput").value = "";
+      document.getElementById("lastnameInput").value = "";
+      document.getElementById("emailInput").value = "";
+      document.getElementById("dobInput").value = "";
+    });
 }
 
 //delete account
