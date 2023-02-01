@@ -87,21 +87,52 @@ function selectCustomer() {
 selectCustomer();
 
 //Customer list
-//fetch data from database and append Account numbers on the select
 function showCustomersList() {
   var html = "";
   fetch("http://localhost:3000/showCustomersList")
     .then((response) => response.json())
     .then((data) => {
-      data.forEach((customers) => {
-        return (html += `<tr>
-        <td>${customers.accountNumber}</td>
-        <td>${customers.firstname} ${customers.lastname}</td>
-        <td>${customers.email}</td>
-        <td>${customers.dob}</td>
-        </tr>`);
-      });
-      document.getElementById("customerListTable").innerHTML = html;
+      const pageSize = 5;
+      let pageNumber = 1;
+
+      function updateTable(pageNumber) {
+        let html = "";
+        const customersList = paginate(data, pageNumber, pageSize);
+        customersList.forEach((customers) => {
+          html += `<tr>
+          <td>${customers.accountNumber}</td>
+          <td>${customers.firstname} ${customers.lastname}</td>
+          <td>${customers.email}</td>
+          <td>${customers.dob}</td>
+          </tr>`;
+        });
+        document.getElementById("customerListTable").innerHTML = html;
+      }
+
+      function paginate(items, pageNumber, pageSize) {
+        const startIndex = (pageNumber - 1) * pageSize;
+        return items.slice(startIndex, startIndex + pageSize);
+      }
+
+      document
+        .getElementById("previousCustomerPage")
+        .addEventListener("click", () => {
+          if (pageNumber > 1) {
+            pageNumber -= 1;
+            updateTable(pageNumber);
+          }
+        });
+
+      document
+        .getElementById("nextCustomerPage")
+        .addEventListener("click", () => {
+          if (pageNumber * pageSize < data.length) {
+            pageNumber += 1;
+            updateTable(pageNumber);
+          }
+        });
+
+      updateTable(pageNumber);
     });
 }
 showCustomersList();
@@ -111,17 +142,42 @@ function showCustomers() {
   fetch("http://localhost:3000/showCustomersList")
     .then((response) => response.json())
     .then((data) => {
-      console.log(data);
-      let html = "";
-      data.forEach((customer) => {
-        return (html += `<tr>
+      const pageSize = 5;
+      let pageNumber = 1;
+
+      function updateTable(pageNumber) {
+        let html = "";
+        const customers = paginate(data, pageNumber, pageSize);
+        customers.forEach((customer) => {
+          html += `<tr>
       <td>${customer.accountNumber}</td>
-			<td>${customer.firstname} ${customer.lastname}</td> 
+      <td>${customer.firstname} ${customer.lastname}</td> 
       <td>${customer.balance}</td>
-			</tr>	`);
-        // insert the generated html into the appropriate element
+    </tr>`;
+        });
+        customerTable.innerHTML = html;
+      }
+
+      function paginate(items, pageNumber, pageSize) {
+        const startIndex = (pageNumber - 1) * pageSize;
+        return items.slice(startIndex, startIndex + pageSize);
+      }
+
+      document.getElementById("previous-page").addEventListener("click", () => {
+        if (pageNumber > 1) {
+          pageNumber -= 1;
+          updateTable(pageNumber);
+        }
       });
-      customerTable.innerHTML = html;
+
+      document.getElementById("next-page").addEventListener("click", () => {
+        if (pageNumber * pageSize < data.length) {
+          pageNumber += 1;
+          updateTable(pageNumber);
+        }
+      });
+
+      updateTable(pageNumber);
     });
 }
 
@@ -216,19 +272,49 @@ function showtransactions() {
   fetch("http://localhost:3000/displayTransactions")
     .then((response) => response.json())
     .then((data) => {
-      let html = "";
-      data.forEach((transaction) => {
-        return (html += `<tr>        
-			<td>${transaction.transactionId}</td>      
-			<td>${transaction.accountNumber}</td>
-			<td>${transaction.transactionType}</td>
-      <td>${transaction.transactionDate}</td>  
-			<td>${transaction.time}</td>      
-      <td>${transaction.amount}</td> 
-			</tr>	`);
-        // insert the generated html into the appropriate element
-      });
-      transactionTable.innerHTML = html;
+      const pageSize = 5;
+      let pageNumber = 1;
+
+      function updateTable(pageNumber) {
+        let html = "";
+        const customersTransactions = paginate(data, pageNumber, pageSize);
+        customersTransactions.forEach((transaction) => {
+          html += `<tr>        
+          <td>${transaction.transactionId}</td>      
+          <td>${transaction.accountNumber}</td>
+          <td>${transaction.transactionType}</td>
+          <td>${transaction.transactionDate}</td>  
+          <td>${transaction.time}</td>      
+          <td>${transaction.amount}</td> 
+          </tr>	`;
+        });
+        transactionTable.innerHTML = html;
+      }
+
+      function paginate(items, pageNumber, pageSize) {
+        const startIndex = (pageNumber - 1) * pageSize;
+        return items.slice(startIndex, startIndex + pageSize);
+      }
+
+      document
+        .getElementById("previousTransactionPage")
+        .addEventListener("click", () => {
+          if (pageNumber > 1) {
+            pageNumber -= 1;
+            updateTable(pageNumber);
+          }
+        });
+
+      document
+        .getElementById("nextTransactionPage")
+        .addEventListener("click", () => {
+          if (pageNumber * pageSize < data.length) {
+            pageNumber += 1;
+            updateTable(pageNumber);
+          }
+        });
+
+      updateTable(pageNumber);
     });
 }
 

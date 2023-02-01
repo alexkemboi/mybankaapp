@@ -34,7 +34,7 @@
   <body>
     <div class="container">
       <!-- navigation bar-->
-      <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <nav class="navbar navbar-expand-lg navbar-light">
         <i class="fas fa-home" style="color: green;"></i>
         <a class="navbar-brand fas fa-house" href="#">Home</a>
         <button
@@ -79,7 +79,7 @@
       <div class="bg-light">
           <!--Customer list-->
       <div class="col-12 ">
-        <div class="card mb-3 d-none" id="customerListCard">
+        <div class="card mb-3 " id="customerListCard">
           <div class="card-body">
             <h4 class="card-title">Customer List</h4>
             <p id="messageDelete" class="text-success text-center"></p>
@@ -130,7 +130,17 @@
                 </tr>
               </thead>
               <tbody id="customerListTable"></tbody>
-            </table>
+            </table>               
+            <div class="row">
+              <div class="col-12">
+              <button class="btn btn-warning m-1" id="previousCustomerPage">
+                Previous
+              </button>
+              <button class="btn btn-warning m-1 float-right" id="nextCustomerPage">
+                Next
+              </button>
+            </div>
+          </div>
           </div>
         </div>
       </div>
@@ -182,7 +192,7 @@
           </div>
 
           <div class="col-12 ">
-            <div class="card mb-3 d-none" id="balanceCard">
+            <div class="card mb-3" id="balanceCard">
               <div class="card-body">
                 <h4 class="card-title">Customer Balances</h4>
                 <p id="messageDelete" class="text-success text-center"></p>
@@ -230,8 +240,21 @@
                       <th>Balance</th>
                     </tr>
                   </thead>
-                  <tbody id="customerTable"></tbody>
-                </table>
+                  <tbody id="customerTable">
+                    
+                  </tbody>
+                </table>                
+                <div class="row">
+                  <div class="col-12">
+                  <button class="btn btn-warning m-1" id="previous-page">
+                    Previous
+                  </button>
+                  <button class="btn btn-warning m-1 float-right" id="next-page">
+                    Next
+                  </button>
+                </div>
+              </div>
+                  
               </div>
             </div>
           </div>
@@ -284,6 +307,16 @@
                       </thead>
                       <tbody id="transactionTable"></tbody>
                     </table>
+                                   
+                <div class="row">
+                  <div class="col-12">
+                  <button class="btn btn-warning m-1" id="previousTransactionPage">
+                    Previous
+                  </button>
+                  <button class="btn btn-warning m-1 float-right" id="nextTransactionPage">
+                    Next
+                  </button>
+                </div></div>
                     </div>
                     </div>              
               </div>
