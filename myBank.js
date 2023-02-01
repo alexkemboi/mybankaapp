@@ -3,8 +3,16 @@ $(document).ready(function () {
     $("#transactCard").toggleClass("d-none");
     $("#balanceCard").addClass("d-none");
     $("#transactionCard").addClass("d-none");
-
     $("#openAccountCard").addClass("d-none");
+    $("#customerListCard").addClass("d-none");
+  });
+
+  $("#homeNavLink").click(function () {
+    $("#customerListCard").toggleClass("d-none");
+    $("#balanceCard").addClass("d-none");
+    $("#transactionCard").addClass("d-none");
+    $("#openAccountCard").addClass("d-none");
+    $("#transactCard").addClass("d-none");
   });
 
   $("#balanceNavLink").click(function () {
@@ -12,6 +20,7 @@ $(document).ready(function () {
     $("#transactCard").addClass("d-none");
     $("#transactionCard").addClass("d-none");
     $("#openAccountCard").addClass("d-none");
+    $("#customerListCard").addClass("d-none");
   });
 
   $("#transactionNavLink").click(function () {
@@ -19,12 +28,14 @@ $(document).ready(function () {
     $("#transactCard").addClass("d-none");
     $("#balanceCard").addClass("d-none");
     $("#openAccountCard").addClass("d-none");
+    $("#customerListCard").addClass("d-none");
   });
   $("#openAccountNavLink").click(function () {
     $("#openAccountCard").toggleClass("d-none");
     $("#transactCard").addClass("d-none");
     $("#balanceCard").addClass("d-none");
     $("#transactionCard").addClass("d-none");
+    $("#customerListCard").addClass("d-none");
   });
 });
 
@@ -410,4 +421,19 @@ document
     } catch (err) {
       console.log(err);
     }
+  });
+
+document
+  .getElementById("downloadTransactionButton")
+  .addEventListener("click", () => {
+    const table = document.getElementById("transactionTable");
+    var pdf = new jsPDF("p", "pt", "letter");
+
+    // You can use the .autoTable method to generate a table from an HTML table element.
+    pdf.autoTable({
+      html: "#transactionTable",
+    });
+
+    // You can save the PDF using the .save method.
+    pdf.save("table.pdf");
   });
